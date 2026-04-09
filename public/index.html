@@ -110,7 +110,10 @@
             </div>
             <div class="assist-body">
               <textarea id="assistInput" data-i18n-placeholder="assistPlaceholder" placeholder="質問や意見を翻訳先言語で入力してください..." rows="2"></textarea>
-              <button id="assistButton" class="btn btn-assist" data-i18n="assistBtn">発言を生成</button>
+              <div class="assist-actions">
+                <button id="assistButton" class="btn btn-assist" data-i18n="assistBtn">発言を生成</button>
+                <div id="assistSuggestions" class="assist-suggestions"></div>
+              </div>
               <div class="assist-output" id="assistOutput"></div>
             </div>
           </div>

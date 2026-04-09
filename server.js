@@ -176,6 +176,76 @@ app.post("/api/summarize", requireAuth, async (req, res) => {
   }
 });
 
+// 質問候補生成エンドポイント
+app.post("/api/question-suggestions", requireAuth, async (req, res) => {
+  const openaiEndpoint = process.env.OPENAI_ENDPOINT;
+  const openaiDeployment = process.env.OPENAI_DEPLOYMENT || "gpt-4.1-mini";
+
+  if (!openaiEndpoint) {
+    return res
+      .status(500)
+      .json({ error: "OPENAI_ENDPOINT が設定されていません。" });
+  }
+
+  const { sentences, targetLanguage } = req.body;
+  if (!sentences || !Array.isArray(sentences) || sentences.length === 0) {
+    return res.status(400).json({ error: "sentences が必要です。" });
+  }
+
+  try {
+    const tokenResponse = await credential.getToken(
+      "https://cognitiveservices.azure.com/.default"
+    );
+
+    const baseUrl = openaiEndpoint.replace(/\/+$/, "");
+    const url = `${baseUrl}/openai/deployments/${openaiDeployment}/chat/completions?api-version=2024-12-01-preview`;
+
+    const numberedText = sentences
+      .map((s, i) => `${i + 1}. ${s}`)
+      .join("\n");
+
+    const systemPrompt = `You are a helpful meeting assistant. Based on the conversation context, suggest exactly 3 short, relevant questions that a participant might want to ask next. Generate the questions in ${targetLanguage}. Return exactly 3 questions, one per line, without numbering, bullet points, or any other prefix.`;
+
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${tokenResponse.token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        messages: [
+          { role: "system", content: systemPrompt },
+          {
+            role: "user",
+            content: `Based on this conversation, suggest 3 questions to ask:\n\n${numberedText}`,
+          },
+        ],
+        max_completion_tokens: 300,
+        temperature: 0.7,
+      }),
+    });
+
+    if (!response.ok) {
+      const errText = await response.text();
+      console.error(`OpenAI request failed: ${response.status} ${errText}`);
+      throw new Error(`OpenAI request failed: ${response.status} ${errText}`);
+    }
+
+    const data = await response.json();
+    const content = data.choices?.[0]?.message?.content || "";
+    const suggestions = content
+      .split("\n")
+      .map((s) => s.trim())
+      .filter((s) => s.length > 0)
+      .slice(0, 3);
+
+    res.json({ suggestions });
+  } catch (err) {
+    console.error("質問候補エラー:", err.message || err);
+    res.status(500).json({ error: `質問候補の生成に失敗しました: ${err.message}` });
+  }
+});
+
 // 発言アシストエンドポイント
 app.post("/api/suggest", requireAuth, async (req, res) => {
   const openaiEndpoint = process.env.OPENAI_ENDPOINT;
