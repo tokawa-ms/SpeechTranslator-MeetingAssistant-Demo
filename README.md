@@ -5,6 +5,8 @@
 [![Azure Speech](https://img.shields.io/badge/Azure-Speech%20Service-0078D4?logo=microsoft-azure)](https://learn.microsoft.com/azure/ai-services/speech-service/)
 [![Azure OpenAI](https://img.shields.io/badge/Azure-OpenAI%20Service-0078D4?logo=microsoft-azure)](https://learn.microsoft.com/azure/ai-services/openai/)
 
+🇺🇸 [English README is here](README-en.md)
+
 Azure Speech Service を使ったリアルタイム音声テキスト翻訳 Web アプリケーションです。
 
 ## 特徴
