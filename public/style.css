@@ -125,7 +125,6 @@ body {
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  max-height: 50vh;
 }
 
 .summary-header {
@@ -190,12 +189,11 @@ body {
 .summary-content {
   padding: 0.75rem 1rem;
   min-height: 60px;
-  max-height: none;
+  max-height: 20vh;
   overflow-y: auto;
   font-size: 0.9rem;
   line-height: 1.7;
   color: #333;
-  flex: 1 1 0;
 }
 
 .summary-placeholder {
@@ -211,9 +209,6 @@ body {
 /* Assist section */
 .assist-section {
   border-top: 1px solid #eee;
-  flex: 2 2 0;
-  overflow-y: auto;
-  min-height: 0;
 }
 
 .assist-header {
