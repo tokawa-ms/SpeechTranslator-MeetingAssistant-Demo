@@ -38,12 +38,32 @@ cp .env.example .env
 # .env を編集して Azure リソースの情報を入力
 ```
 
-`.env` の設定例:
+`.env` の設定項目:
+
+| 変数名 | 必須 | 説明 |
+|---|---|---|
+| `SPEECH_ENDPOINT` | ✅ | Azure Speech Service のエンドポイント URL |
+| `OPENAI_ENDPOINT` | ✅ | Azure OpenAI Service のエンドポイント URL |
+| `OPENAI_DEPLOYMENT` | | Azure OpenAI のデプロイメント名（既定: `gpt-4.1-mini`） |
+| `USER_NAME` | | 簡易認証のユーザー名（`USER_PASSWORD` と共に設定すると認証が有効化） |
+| `USER_PASSWORD` | | 簡易認証のパスワード |
+| `RESOURCE_GROUP` | ※ | デプロイ先の Azure リソースグループ名 |
+| `CONTAINER_REGISTRY_NAME` | ※ | Azure Container Registry の名前 |
+| `ENVIRONMENT_NAME` | ※ | Azure Container Apps Environment の名前 |
+
+> ※ `deploy.ps1` による Azure Container Apps へのデプロイ時に必要です。
+
+設定例:
 
 ```
 SPEECH_ENDPOINT=https://<your-resource-name>.cognitiveservices.azure.com/
 OPENAI_ENDPOINT=https://<your-resource-name>.openai.azure.com/
 OPENAI_DEPLOYMENT=gpt-4.1-mini
+USER_NAME=your_username
+USER_PASSWORD=your_password
+RESOURCE_GROUP=<your-resource-group>
+CONTAINER_REGISTRY_NAME=<your-acr-name>
+ENVIRONMENT_NAME=<your-container-apps-environment-name>
 ```
 
 サーバーを起動:

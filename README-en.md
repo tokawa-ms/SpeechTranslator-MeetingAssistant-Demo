@@ -38,12 +38,32 @@ cp .env.example .env
 # Edit .env and fill in your Azure resource information
 ```
 
-Example `.env` configuration:
+`.env` configuration items:
+
+| Variable | Required | Description |
+|---|---|---|
+| `SPEECH_ENDPOINT` | ✅ | Azure Speech Service endpoint URL |
+| `OPENAI_ENDPOINT` | ✅ | Azure OpenAI Service endpoint URL |
+| `OPENAI_DEPLOYMENT` | | Azure OpenAI deployment name (default: `gpt-4.1-mini`) |
+| `USER_NAME` | | Username for simple authentication (enabled when both `USER_NAME` and `USER_PASSWORD` are set) |
+| `USER_PASSWORD` | | Password for simple authentication |
+| `RESOURCE_GROUP` | ※ | Azure resource group name for deployment |
+| `CONTAINER_REGISTRY_NAME` | ※ | Azure Container Registry name |
+| `ENVIRONMENT_NAME` | ※ | Azure Container Apps Environment name |
+
+> ※ Required when deploying to Azure Container Apps via `deploy.ps1`.
+
+Example configuration:
 
 ```
 SPEECH_ENDPOINT=https://<your-resource-name>.cognitiveservices.azure.com/
 OPENAI_ENDPOINT=https://<your-resource-name>.openai.azure.com/
 OPENAI_DEPLOYMENT=gpt-4.1-mini
+USER_NAME=your_username
+USER_PASSWORD=your_password
+RESOURCE_GROUP=<your-resource-group>
+CONTAINER_REGISTRY_NAME=<your-acr-name>
+ENVIRONMENT_NAME=<your-container-apps-environment-name>
 ```
 
 Start the server:
