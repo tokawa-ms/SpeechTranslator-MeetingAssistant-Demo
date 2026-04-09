@@ -84,7 +84,33 @@
             </div>
           </div>
 
-          <div class="language-badges" id="languageBadges"></div>
+          <div class="language-selectors">
+            <select id="inlineFromLanguage" class="inline-lang-select">
+              <option value="en-US" data-i18n="lang_en_US">英語 (US)</option>
+              <option value="ja-JP" data-i18n="lang_ja_JP">日本語</option>
+              <option value="zh-CN" data-i18n="lang_zh_CN">中国語 (簡体)</option>
+              <option value="ko-KR" data-i18n="lang_ko_KR">韓国語</option>
+              <option value="fr-FR" data-i18n="lang_fr_FR">フランス語</option>
+              <option value="de-DE" data-i18n="lang_de_DE">ドイツ語</option>
+              <option value="es-ES" data-i18n="lang_es_ES">スペイン語</option>
+              <option value="pt-BR" data-i18n="lang_pt_BR">ポルトガル語 (ブラジル)</option>
+              <option value="it-IT" data-i18n="lang_it_IT">イタリア語</option>
+              <option value="ru-RU" data-i18n="lang_ru_RU">ロシア語</option>
+            </select>
+            <span class="lang-arrow">→</span>
+            <select id="inlineToLanguage" class="inline-lang-select">
+              <option value="ja" data-i18n="lang_ja">日本語</option>
+              <option value="en" data-i18n="lang_en">英語</option>
+              <option value="zh-Hans" data-i18n="lang_zh_Hans">中国語 (簡体)</option>
+              <option value="ko" data-i18n="lang_ko">韓国語</option>
+              <option value="fr" data-i18n="lang_fr">フランス語</option>
+              <option value="de" data-i18n="lang_de">ドイツ語</option>
+              <option value="es" data-i18n="lang_es">スペイン語</option>
+              <option value="pt" data-i18n="lang_pt">ポルトガル語</option>
+              <option value="it" data-i18n="lang_it">イタリア語</option>
+              <option value="ru" data-i18n="lang_ru">ロシア語</option>
+            </select>
+          </div>
 
           <button id="startButton" class="btn" data-i18n="startBtn">翻訳開始</button>
           <button id="downloadButton" class="btn btn-download" data-i18n="downloadBtn">履歴ダウンロード</button>

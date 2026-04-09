@@ -196,8 +196,11 @@ const settingsModal = document.getElementById("settingsModal");
 const settingsButton = document.getElementById("settingsButton");
 const settingsClose = document.getElementById("settingsClose");
 const settingsSave = document.getElementById("settingsSave");
-const languageBadges = document.getElementById("languageBadges");
 const uiLangButton = document.getElementById("uiLangButton");
+
+// インライン言語セレクト
+const inlineFromLanguage = document.getElementById("inlineFromLanguage");
+const inlineToLanguage = document.getElementById("inlineToLanguage");
 
 // UI 言語切り替え
 uiLangButton.addEventListener("click", () => {
@@ -206,7 +209,6 @@ uiLangButton.addEventListener("click", () => {
   applyI18n();
   // UI 言語変更時にデフォルト翻訳言語を設定（ユーザーがまだ変更していない場合）
   applyDefaultTranslationLanguages();
-  updateLanguageBadges();
   // Update dynamic button text
   if (isRecognizing) {
     startButton.textContent = t("stopBtn");
@@ -224,6 +226,7 @@ function applyDefaultTranslationLanguages() {
     fromLanguageSelect.value = "ja-JP";
     toLanguageSelect.value = "en";
   }
+  syncInlineFromModal();
   saveLanguageSettings();
 }
 
@@ -244,25 +247,36 @@ function loadLanguageSettings() {
       toLanguageSelect.value = "en";
     }
   }
-  updateLanguageBadges();
+  syncInlineFromModal();
 }
 
 // localStorage に言語設定を保存
 function saveLanguageSettings() {
   localStorage.setItem("fromLanguage", fromLanguageSelect.value);
   localStorage.setItem("toLanguage", toLanguageSelect.value);
-  updateLanguageBadges();
 }
 
-// 言語バッジを更新
-function updateLanguageBadges() {
-  const fromText = fromLanguageSelect.options[fromLanguageSelect.selectedIndex].text;
-  const toText = toLanguageSelect.options[toLanguageSelect.selectedIndex].text;
-  languageBadges.innerHTML =
-    `<span class="language-badge">${fromText}</span>` +
-    `<span style="color:#999;font-size:0.85rem;">→</span>` +
-    `<span class="language-badge">${toText}</span>`;
+// インラインセレクトをモーダルセレクトの値に同期
+function syncInlineFromModal() {
+  inlineFromLanguage.value = fromLanguageSelect.value;
+  inlineToLanguage.value = toLanguageSelect.value;
 }
+
+// モーダルセレクトをインラインセレクトの値に同期
+function syncModalFromInline() {
+  fromLanguageSelect.value = inlineFromLanguage.value;
+  toLanguageSelect.value = inlineToLanguage.value;
+}
+
+// インラインセレクト変更時
+inlineFromLanguage.addEventListener("change", () => {
+  syncModalFromInline();
+  saveLanguageSettings();
+});
+inlineToLanguage.addEventListener("change", () => {
+  syncModalFromInline();
+  saveLanguageSettings();
+});
 
 // モーダル開閉
 settingsButton.addEventListener("click", () => {
@@ -277,6 +291,7 @@ settingsModal.addEventListener("click", (e) => {
   if (e.target === settingsModal) settingsModal.classList.remove("open");
 });
 settingsSave.addEventListener("click", () => {
+  syncInlineFromModal();
   saveLanguageSettings();
   settingsModal.classList.remove("open");
 });
@@ -419,6 +434,8 @@ async function startRecognition() {
         startButton.textContent = t("stopBtn");
         startButton.classList.add("active");
         statusDiv.textContent = t("statusListening");
+        inlineFromLanguage.disabled = true;
+        inlineToLanguage.disabled = true;
       },
       (err) => {
         console.error("開始エラー:", err);
@@ -447,6 +464,8 @@ function stopRecognition() {
   startButton.textContent = t("startBtn");
   startButton.classList.remove("active");
   statusDiv.textContent = t("statusStopped");
+  inlineFromLanguage.disabled = false;
+  inlineToLanguage.disabled = false;
   interimRecognizedDiv.textContent = "";
   interimTranslatedDiv.textContent = "";
 }
