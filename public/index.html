@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title data-i18n="title">AI 多言語会議アシスタント</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <!-- ログイン画面 -->
+    <div class="login-overlay" id="loginOverlay">
+      <div class="login-card">
+        <div class="login-icon">&#127760;</div>
+        <h1 class="login-title">AI Multilingual Meeting Assistant</h1>
+        <form id="loginForm" autocomplete="off">
+          <div class="login-field">
+            <input type="text" id="loginUsername" data-i18n-placeholder="loginUsername" placeholder="ユーザー名" required autocomplete="username" />
+          </div>
+          <div class="login-field">
+            <input type="password" id="loginPassword" data-i18n-placeholder="loginPassword" placeholder="パスワード" required autocomplete="current-password" />
+          </div>
+          <div class="login-error" id="loginError"></div>
+          <button type="submit" class="login-btn" data-i18n="loginBtn">ログイン</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- 設定モーダル -->
+    <div class="modal-overlay" id="settingsModal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 data-i18n="langSettings">言語設定</h2>
+          <button class="modal-close" id="settingsClose">&times;</button>
+        </div>
+        <div class="modal-body">
+          <div class="setting-group">
+            <label for="fromLanguage" data-i18n="fromLanguageLabel">認識言語（話す言語）</label>
+            <select id="fromLanguage">
+              <option value="en-US" data-i18n="lang_en_US">英語 (US)</option>
+              <option value="ja-JP" data-i18n="lang_ja_JP">日本語</option>
+              <option value="zh-CN" data-i18n="lang_zh_CN">中国語 (簡体)</option>
+              <option value="ko-KR" data-i18n="lang_ko_KR">韓国語</option>
+              <option value="fr-FR" data-i18n="lang_fr_FR">フランス語</option>
+              <option value="de-DE" data-i18n="lang_de_DE">ドイツ語</option>
+              <option value="es-ES" data-i18n="lang_es_ES">スペイン語</option>
+              <option value="pt-BR" data-i18n="lang_pt_BR">ポルトガル語 (ブラジル)</option>
+              <option value="it-IT" data-i18n="lang_it_IT">イタリア語</option>
+              <option value="ru-RU" data-i18n="lang_ru_RU">ロシア語</option>
+            </select>
+          </div>
+          <div class="setting-group">
+            <label for="toLanguage" data-i18n="toLanguageLabel">翻訳先言語</label>
+            <select id="toLanguage">
+              <option value="ja" data-i18n="lang_ja">日本語</option>
+              <option value="en" data-i18n="lang_en">英語</option>
+              <option value="zh-Hans" data-i18n="lang_zh_Hans">中国語 (簡体)</option>
+              <option value="ko" data-i18n="lang_ko">韓国語</option>
+              <option value="fr" data-i18n="lang_fr">フランス語</option>
+              <option value="de" data-i18n="lang_de">ドイツ語</option>
+              <option value="es" data-i18n="lang_es">スペイン語</option>
+              <option value="pt" data-i18n="lang_pt">ポルトガル語</option>
+              <option value="it" data-i18n="lang_it">イタリア語</option>
+              <option value="ru" data-i18n="lang_ru">ロシア語</option>
+            </select>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn" id="settingsSave" data-i18n="saveBtn">保存</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="header-area">
+        <div class="header-left">
+          <div class="title-row">
+            <div>
+              <h1 data-i18n="title">AI 多言語会議アシスタント</h1>
+              <p class="subtitle" data-i18n="subtitle">Azure Speech Service を使用した音声テキスト翻訳デモ</p>
+            </div>
+            <div class="title-buttons">
+              <button class="btn-icon" id="uiLangButton" title="English / 日本語">&#127760;</button>
+              <button class="btn-icon" id="settingsButton" data-i18n-title="langSettings" title="言語設定">&#9881;</button>
+            </div>
+          </div>
+
+          <div class="language-badges" id="languageBadges"></div>
+
+          <button id="startButton" class="btn" data-i18n="startBtn">翻訳開始</button>
+          <button id="downloadButton" class="btn btn-download" data-i18n="downloadBtn">履歴ダウンロード</button>
+
+          <div class="status" id="status" data-i18n="statusReady">マイクボタンを押して開始してください</div>
+        </div>
+
+        <div class="header-right">
+          <div class="summary-header">
+            <h2 data-i18n="aiSummary">AI 要約</h2>
+            <label class="toggle-switch">
+              <input type="checkbox" id="summaryToggle" />
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+          <div class="summary-content" id="summaryContent">
+            <p class="summary-placeholder" data-i18n="summaryPlaceholder">要約機能をオンにすると、10文ごとに直近50文の要約が表示されます。</p>
+          </div>
+
+          <div class="assist-section">
+            <div class="assist-header">
+              <h2 data-i18n="assistTitle">発言アシスト</h2>
+            </div>
+            <div class="assist-body">
+              <textarea id="assistInput" data-i18n-placeholder="assistPlaceholder" placeholder="質問や意見を翻訳先言語で入力してください..." rows="2"></textarea>
+              <button id="assistButton" class="btn btn-assist" data-i18n="assistBtn">発言を生成</button>
+              <div class="assist-output" id="assistOutput"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="results">
+        <div class="result-panel">
+          <h2 data-i18n="recognizedTitle">認識テキスト（原文）</h2>
+          <div class="interim" id="interimRecognized"></div>
+          <div class="text-output" id="recognizedText"></div>
+        </div>
+        <div class="result-panel">
+          <h2 data-i18n="translatedTitle">翻訳テキスト</h2>
+          <div class="interim" id="interimTranslated"></div>
+          <div class="text-output" id="translatedText"></div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://aka.ms/csspeech/jsbrowserpackageraw"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
