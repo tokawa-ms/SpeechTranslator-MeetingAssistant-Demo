@@ -1,0 +1,19 @@
+# 環境変数（秘密情報・エンドポイント）
+.env
+.env.local
+.env.*.local
+
+# 依存パッケージ
+node_modules/
+
+# ログ
+*.log
+npm-debug.log*
+
+# OS 生成ファイル
+.DS_Store
+Thumbs.db
+
+# エディタ / IDE
+.vscode/
+.idea/
