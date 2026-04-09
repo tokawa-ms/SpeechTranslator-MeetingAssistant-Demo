@@ -28,6 +28,7 @@ const i18n = {
     assistLoading: "生成中...",
     assistError: "生成に失敗しました。",
     assistLabel: (lang) => `${lang} で言うと:`,
+    questionSuggestionsLabel: "質問候補:",
     recognizedTitle: "認識テキスト（原文）",
     translatedTitle: "翻訳テキスト",
     errorTokenFetch: "トークンの取得に失敗しました",
@@ -76,6 +77,7 @@ const i18n = {
     assistLoading: "Generating...",
     assistError: "Generation failed.",
     assistLabel: (lang) => `In ${lang}:`,
+    questionSuggestionsLabel: "Question suggestions:",
     recognizedTitle: "Recognized Text (Original)",
     translatedTitle: "Translated Text",
     errorTokenFetch: "Failed to retrieve token",
@@ -187,6 +189,7 @@ const summaryContent = document.getElementById("summaryContent");
 const assistInput = document.getElementById("assistInput");
 const assistButton = document.getElementById("assistButton");
 const assistOutput = document.getElementById("assistOutput");
+const assistSuggestions = document.getElementById("assistSuggestions");
 
 // 設定モーダル関連
 const settingsModal = document.getElementById("settingsModal");
@@ -500,12 +503,64 @@ async function requestSummary() {
     const p = document.createElement("p");
     p.textContent = data.summary;
     summaryContent.appendChild(p);
+
+    // 要約完了後に質問候補を生成
+    requestQuestionSuggestions();
   } catch (err) {
     console.error("要約エラー:", err);
     summaryContent.innerHTML =
       `<p class="summary-placeholder">${t("summaryError")}</p>`;
   } finally {
     summaryRequestInFlight = false;
+  }
+}
+
+let questionSuggestionsRequestInFlight = false;
+
+async function requestQuestionSuggestions() {
+  if (questionSuggestionsRequestInFlight) return;
+  if (recognizedSentences.length === 0) return;
+
+  questionSuggestionsRequestInFlight = true;
+
+  const targetLang = toLanguageSelect.value;
+  const langName = languageNames[targetLang] || targetLang;
+
+  try {
+    const response = await fetch("/api/question-suggestions", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        sentences: recognizedSentences.slice(),
+        targetLanguage: langName,
+      }),
+    });
+
+    if (!response.ok) {
+      const errData = await response.json().catch(() => ({}));
+      throw new Error(errData.error || "質問候補の取得に失敗しました");
+    }
+
+    const data = await response.json();
+    assistSuggestions.innerHTML = "";
+
+    if (data.suggestions && data.suggestions.length > 0) {
+      data.suggestions.forEach((suggestion) => {
+        const btn = document.createElement("button");
+        btn.className = "btn-suggestion";
+        btn.textContent = suggestion;
+        btn.title = suggestion;
+        btn.addEventListener("click", () => {
+          assistInput.value = suggestion;
+          requestAssist(suggestion);
+        });
+        assistSuggestions.appendChild(btn);
+      });
+    }
+  } catch (err) {
+    console.error("質問候補エラー:", err);
+  } finally {
+    questionSuggestionsRequestInFlight = false;
   }
 }
 
