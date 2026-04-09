@@ -1,4 +1,4 @@
-# Simple Speech Translator Demo
+# AI 多言語翻訳 ミーティングアシスタント デモ
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Node.js](https://img.shields.io/badge/Node.js-%3E%3D18-green?logo=node.js)](https://nodejs.org/)
